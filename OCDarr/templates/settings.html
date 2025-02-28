@@ -1,0 +1,434 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Series Manager{% endblock %}
+
+{% block content %}
+<!-- Settings Page -->
+<div class="settings-container">
+    <!-- Sub-menu for Settings -->
+    <div class="row mb-3">
+        <div class="col d-flex justify-content-between">
+            <button onclick="showSettingsSection('service_status')" class="btn btn-secondary">Servers</button>
+            <button onclick="showSettingsSection('rule_management')" class="btn btn-secondary">Rules</button>
+            <button onclick="showSettingsSection('episodes')" class="btn btn-secondary">Episodes</button>
+        </div>
+    </div>
+
+    <!-- Caddy Status and Site Links Subsection -->
+    <div id="service_status" class="settings-subsection">
+        <div class="service-status mb-4" style="font-size: 0.8rem;">
+            <table class="table table-dark table-striped">
+                <tbody>
+                    {% for name, details in services.items() %}
+                    <tr>
+                        <!-- Icon as Link -->
+                        <td>
+                            <a href="{{ details['url'] }}" target="_blank">
+                                <img src="{{ details['icon'] }}" alt="{{ name }} Icon" style="width: 20px; height: 20px; object-fit: contain; margin-right: 5px;">
+                            </a>
+                        </td>
+                        <!-- Service Name -->
+                        <td>{{ name }}</td>
+                        <!-- Status Dot -->
+                        <td>
+                            <span class="status-indicator {{ 'status-up' if service_status[name] == 'Online' else 'status-down' }}"></span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Rule Management Subsection -->
+    <div id="rule_management" class="settings-subsection" style="display: none;">
+        <h4>Rules</h4>
+        <form id="settings-form" method="POST" action="{{ url_for('update_settings') }}">
+            <div class="form-group">
+                <label for="rule_name">Select Rule:</label>
+                <select id="rule_name" name="rule_name" class="form-control" onchange="toggleNewRuleName()">
+                    {% for rule_name in config['rules'].keys() %}
+                    <option value="{{ rule_name }}" {{ 'selected' if rule_name == rule else '' }}>{{ rule_name|capitalize }}</option>
+                    {% endfor %}
+                    <option value="add_new">Add New</option>
+                </select>
+            </div>
+            <div class="form-group" id="new_rule_name_group" style="display:none;">
+                <label for="new_rule_name">New Rule Name:</label>
+                <input type="text" id="new_rule_name" name="new_rule_name" class="form-control" placeholder="Enter new rule name">
+            </div>
+            <div class="form-group">
+                <label for="get_option">How many more episodes to get?:</label>
+                <input type="text" id="get_option" name="get_option" placeholder="Enter 'season', 'all', or a number" class="form-control" value="">
+            </div>
+            <div class="form-group">
+                <label for="action_option">Action for Episodes:</label>
+                <select id="action_option" name="action_option" class="form-control">
+                    <option value="monitor">Monitor</option>
+                    <option value="search">Search</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="keep_watched">How many episodes to keep?:</label>
+                <input type="text" id="keep_watched" name="keep_watched" placeholder="Enter 'season', 'all', or a number" class="form-control" value="">
+            </div>
+            <div class="form-group">
+                <label for="monitor_watched">Keep monitored if watched:</label>
+                <select id="monitor_watched" name="monitor_watched" class="form-control">
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Settings</button>
+        </form>
+
+        <form id="delete-rule-form" method="POST" action="{{ url_for('delete_rule') }}" onsubmit="return confirmDeleteRule()">
+            <input type="hidden" name="rule_name" id="delete_rule_name">
+            <button type="submit" class="btn btn-danger" id="delete_rule">Delete Rule</button>
+        </form>
+
+        <!-- Assign Rules Button -->
+        <button class="btn btn-secondary mt-3" onclick="location.href='/assign-rules'">Assign Rules</button>
+    </div>
+    
+    <!-- Episodes Subsection -->
+    <div id="episodes" class="settings-subsection" style="display: none;">
+        <h4>Episode Selection</h4>
+        
+        <!-- Enhanced Direct Request Form -->
+        <form id="direct-request-form" class="mb-4">
+            <div class="form-group">
+                <label for="direct-request">Direct Request:</label>
+                <input type="text" id="direct-request" class="form-control" 
+                    placeholder="Enter show name (e.g., 'Show Name S01E01-03' or 'Show Name')">
+            </div>
+            <div class="form-check mb-2">
+                <input type="checkbox" class="form-check-input" id="add-if-missing" checked>
+                <label class="form-check-label" for="add-if-missing">Add to Sonarr if missing</label>
+            </div>
+            <button type="button" id="process-direct-request" class="btn btn-primary">
+                <span id="request-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                Process Request
+            </button>
+            <div id="request-status" class="alert mt-2" style="display: none;"></div>
+        </form>
+        
+        <hr>
+        
+        <!-- Series Selection -->
+        <h5>Select Series and Season</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="series-select">Series:</label>
+                    <select id="series-select" class="form-control">
+                        <option value="">Select a series</option>
+                        {% for series in all_series %}
+                        <option value="{{ series.id }}">{{ series.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="season-select">Season:</label>
+                    <select id="season-select" class="form-control" disabled>
+                        <option value="">Select a season</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <button id="go-to-selection" class="btn btn-primary" disabled>Show Episodes</button>
+    </div>
+    
+    {% if message %}
+    <div class="alert alert-success">{{ message }}</div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Original scripts content -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize rule settings
+        loadRule();
+        
+        // Show the first section by default
+        showSettingsSection('service_status');
+        
+        // Parse URL parameters for message
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        
+        if (message) {
+            // Clean the URL
+            window.history.replaceState({}, document.title, '/settings');
+            
+            // Show message
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'alert alert-success';
+            messageDiv.textContent = message;
+            document.querySelector('.settings-container').prepend(messageDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+    });
+    
+    function showSettingsSection(subsectionId) {
+        document.querySelectorAll('.settings-subsection').forEach(subsection => {
+            subsection.style.display = 'none';
+        });
+        document.getElementById(subsectionId).style.display = 'block';
+    }
+    
+    function toggleNewRuleName() {
+        var newRuleNameGroup = document.getElementById('new_rule_name_group');
+        if (document.getElementById('rule_name').value === 'add_new') {
+            newRuleNameGroup.style.display = 'block';
+        } else {
+            newRuleNameGroup.style.display = 'none';
+        }
+        loadRule();
+    }
+    
+    function loadRule() {
+        var ruleName = document.getElementById('rule_name').value;
+        var config = JSON.parse(document.getElementById('config-data').textContent);
+        var rule = config.rules[ruleName];
+
+        document.getElementById('get_option').value = rule ? rule.get_option : '';
+        document.getElementById('action_option').value = rule ? rule.action_option : '';
+        document.getElementById('keep_watched').value = rule ? rule.keep_watched : '';
+        document.getElementById('monitor_watched').value = rule ? rule.monitor_watched.toString() : 'false';
+    }
+    
+    function confirmDeleteRule() {
+        var ruleName = document.getElementById('rule_name').value;
+        if (ruleName === 'default') {
+            alert("The default rule cannot be deleted.");
+            return false;
+        }
+        document.getElementById('delete_rule_name').value = ruleName;
+        return confirm(`Are you sure you want to delete the rule "${ruleName}"?`);
+    }
+
+    // Episode selection functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Only run if these elements exist
+        if (!document.getElementById('direct-request')) return;
+        
+        const directRequestInput = document.getElementById('direct-request');
+        const processDirectRequestBtn = document.getElementById('process-direct-request');
+        const seriesSelect = document.getElementById('series-select');
+        const seasonSelect = document.getElementById('season-select');
+        const goToSelectionBtn = document.getElementById('go-to-selection');
+        
+// Process direct request button
+processDirectRequestBtn.addEventListener('click', function() {
+    const request = directRequestInput.value.trim();
+    const addIfMissing = document.getElementById('add-if-missing').checked;
+    const requestSpinner = document.getElementById('request-spinner');
+    const requestStatus = document.getElementById('request-status');
+    
+    if (!request) {
+        showRequestStatus("Please enter a show name", "danger");
+        return;
+    }
+    
+    // Show processing state
+    requestSpinner.classList.remove('d-none');
+    processDirectRequestBtn.disabled = true;
+    showRequestStatus("Processing request...", "info");
+    
+    // Parse the request to identify show name, season, episodes
+    const patterns = [
+        // Show Name S01E01-03
+        /^(.*?)\s+[sS](\d+)[eE](\d+)(?:-(\d+))?$/,
+        // Show Name S01
+        /^(.*?)\s+[sS](\d+)$/,
+        // Just show name
+        /^(.*?)$/
+    ];
+    
+    let match;
+    let pattern;
+    for (let i = 0; i < patterns.length; i++) {
+        match = request.match(patterns[i]);
+        if (match) {
+            pattern = i;
+            break;
+        }
+    }
+    
+    if (!match) {
+        showRequestStatus('Invalid format. Please use "Show Name S01E01-03", "Show Name S01", or just "Show Name"', "danger");
+        requestSpinner.classList.add('d-none');
+        processDirectRequestBtn.disabled = false;
+        return;
+    }
+    
+    const showName = match[1].trim();
+    
+    // Search for the show
+    fetch(`/search-series?query=${encodeURIComponent(showName)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'error') {
+                showRequestStatus(data.message, "danger");
+                requestSpinner.classList.add('d-none');
+                processDirectRequestBtn.disabled = false;
+                return;
+            }
+            
+            if (data.series.length === 0) {
+                if (addIfMissing) {
+                    // Show not found, search TVDB and add it
+                    showRequestStatus(`"${showName}" not found in Sonarr. Searching TVDB...`, "info");
+                    searchTVDBAndAddSeries(showName, pattern, match);
+                } else {
+                    showRequestStatus('No matching series found. Check "Add to Sonarr if missing" to search TVDB and add it.', "danger");
+                    requestSpinner.classList.add('d-none');
+                    processDirectRequestBtn.disabled = false;
+                }
+                return;
+            }
+            
+            // Series found in Sonarr, proceed
+            showRequestStatus(`Found "${data.series[0].title}" in Sonarr. Redirecting to episode selection...`, "success");
+            setTimeout(() => {
+                processFoundSeries(data.series, pattern, match);
+            }, 1000); // Brief delay to show success message
+        })
+        .catch(error => {
+            showRequestStatus(`Error: ${error.message}`, "danger");
+            requestSpinner.classList.add('d-none');
+            processDirectRequestBtn.disabled = false;
+        });
+});
+
+// New function to search TVDB and add series
+function searchTVDBAndAddSeries(showName, pattern, match) {
+    // Show loading indicator
+    document.getElementById('process-direct-request').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
+    
+    fetch(`/search-tvdb?query=${encodeURIComponent(showName)}`)
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading indicator
+            document.getElementById('process-direct-request').innerText = 'Process Request';
+            
+            if (data.status === 'error') {
+                alert(data.message);
+                return;
+            }
+            
+            if (data.results.length === 0) {
+                alert('No matching series found on TVDB.');
+                return;
+            }
+            
+            // If multiple results, let user choose
+            if (data.results.length > 1) {
+                const result = confirm(`Multiple matches found. Add "${data.results[0].title}" (${data.results[0].year || 'Unknown Year'})?`);
+                if (!result) return;
+            }
+            
+            // Add the first result to Sonarr
+            addSeriesToSonarr(data.results[0], pattern, match);
+        })
+        .catch(error => {
+            document.getElementById('process-direct-request').innerText = 'Process Request';
+            alert(`Error: ${error.message}`);
+        });
+}
+// Helper function to show status
+function showRequestStatus(message, type) {
+    const requestStatus = document.getElementById('request-status');
+    requestStatus.textContent = message;
+    requestStatus.className = `alert alert-${type} mt-2`;
+    requestStatus.style.display = 'block';
+}
+// New function to add series to Sonarr
+function addSeriesToSonarr(tvdbResult, pattern, match) {
+    document.getElementById('process-direct-request').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+    
+    fetch('/add-series', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            tvdbId: tvdbResult.tvdbId,
+            title: tvdbResult.title
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('process-direct-request').innerText = 'Process Request';
+        
+        if (data.status === 'error') {
+            alert(data.message);
+            return;
+        }
+        
+        // Successfully added, now process with the new series
+        alert(`Added "${tvdbResult.title}" to Sonarr!`);
+        
+        // Get the season number and episode info
+        let season = 1;
+        let startEp = 1;
+        let endEp = 1;
+        
+        if (pattern === 0) {
+            // Show Name S01E01-03
+            season = parseInt(match[2]);
+            startEp = parseInt(match[3]);
+            endEp = match[4] ? parseInt(match[4]) : startEp;
+        } else if (pattern === 1) {
+            // Show Name S01
+            season = parseInt(match[2]);
+        }
+        
+        // Redirect to episode selection for this new series
+        window.location.href = `/episode-selection?series_id=${data.series.id}&season=${season}&start_ep=${startEp}&end_ep=${endEp}`;
+    })
+    .catch(error => {
+        document.getElementById('process-direct-request').innerText = 'Process Request';
+        alert(`Error: ${error.message}`);
+    });
+}
+
+// Process found series (existing function refactored)
+function processFoundSeries(seriesList, pattern, match) {
+    // If multiple matches - show a modal or dropdown to select
+    let series;
+    if (seriesList.length > 1) {
+        // For simplicity, we'll just take the first match for now
+        alert(`Multiple matches found. Using "${seriesList[0].title}"`);
+        series = seriesList[0];
+    } else {
+        series = seriesList[0];
+    }
+    
+    if (pattern === 0) {
+        // Show Name S01E01-03
+        const season = match[2];
+        const startEp = match[3];
+        const endEp = match[4] || startEp;
+        window.location.href = `/episode-selection?series_id=${series.id}&season=${season}&start_ep=${startEp}&end_ep=${endEp}`;
+    } else if (pattern === 1) {
+        // Show Name S01
+        const season = match[2];
+        window.location.href = `/episode-selection?series_id=${series.id}&season=${season}`;
+    } else {
+        // Just show name
+        window.location.href = `/episode-selection?series_id=${series.id}`;
+    }
+}
+</script>
+{% endblock %}

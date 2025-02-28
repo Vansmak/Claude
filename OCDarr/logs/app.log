@@ -1,0 +1,288 @@
+Searching for series: The Night Agent
+Found 54 series in Sonarr
+Available series: ['The Last of Us', 'The Lincoln Lawyer', 'Shrinking', 'The Night Agent', 'The Bear', 'The Boys', 'Reacher', 'The Outlaws', 'The Sopranos', 'Stranger Things', 'Mayor of Kingstown', 'The Mandalorian', 'Loki', 'Invasion (2021)', 'Gangs of London', 'The Walking Dead: Dead City', 'Silo', 'Formula 1: Drive to Survive', 'Cobra Kai', 'Peacemaker', 'House of the Dragon', 'The Walking Dead: Daryl Dixon', 'Fargo', 'Slow Horses', 'True Detective', 'Mr Inbetween', 'The Gentlemen', 'Halo', 'Fallout', 'Tulsa King', 'Kin', 'Shōgun', 'Bosch', 'The Ultimate Fighter', 'Presumed Innocent', 'Dark Matter (2024)', 'Trying', 'Those About to Die', 'Bad Monkey', 'FROM', 'The Penguin', 'The Old Man', 'Landman', 'The Agency (2024)', 'Severance', '1923', 'The White Lotus', 'The Day of the Jackal', 'Daredevil: Born Again', 'Vice Principals', 'The Righteous Gemstones', 'The Blacklist', 'Game of Thrones', 'Dexter']
+Found match: The Night Agent
+Applying specific rule: {'get_option': '1', 'action_option': 'search', 'keep_watched': '1', 'monitor_watched': False, 'series': ['2', '75', '10', '27', '63', '15', '8', '52', '74', '1', '32', '76', '14', '54', '79', '20', '31', '53', '51', '44', '25', '17', '71', '23', '81', '18', '66', '4', '80', '11', '73', '67', '65', '7', '64', '60', '16', '19', '9', '41', '59', '45', '29', '55', '39', '3', '70', '21']}
+Episodes [3826] successfully unmonitored.
+Episodes [3827] successfully monitored.
+Episode search command sent to Sonarr successfully.
+No episodes to delete.
+No episodes to delete.
+Found monitored seasons: [3]
+Processing season 3
+Episodes [37935] successfully monitored.
+Monitoring S3E1
+Episodes [37936] successfully unmonitored.
+Unmonitoring S3E2
+Episodes [37937] successfully unmonitored.
+Unmonitoring S3E3
+Episodes [37938] successfully unmonitored.
+Unmonitoring S3E4
+Episodes [37939] successfully unmonitored.
+Unmonitoring S3E5
+Episodes [37940] successfully unmonitored.
+Unmonitoring S3E6
+Episodes [37941] successfully unmonitored.
+Unmonitoring S3E7
+Episodes [37942] successfully unmonitored.
+Unmonitoring S3E8
+Episodes [37943] successfully unmonitored.
+Unmonitoring S3E9
+Episodes [37944] successfully unmonitored.
+Unmonitoring S3E10
+Episodes [37945] successfully unmonitored.
+Unmonitoring S3E11
+Episodes [37946] successfully unmonitored.
+Unmonitoring S3E12
+Episodes [37947] successfully unmonitored.
+Unmonitoring S3E13
+Episodes [37948] successfully unmonitored.
+Unmonitoring S3E14
+Episodes [37949] successfully unmonitored.
+Unmonitoring S3E15
+Episodes [37950] successfully unmonitored.
+Unmonitoring S3E16
+Episodes [37951] successfully unmonitored.
+Unmonitoring S3E17
+Episodes [37952] successfully unmonitored.
+Unmonitoring S3E18
+Episodes [37953] successfully unmonitored.
+Unmonitoring S3E19
+Episodes [37954] successfully unmonitored.
+Unmonitoring S3E20
+Episodes [37955] successfully unmonitored.
+Unmonitoring S3E21
+Episodes [37956] successfully unmonitored.
+Unmonitoring S3E22
+Episodes [37957] successfully unmonitored.
+Unmonitoring S3E23
+Episodes [37958] successfully unmonitored.
+Unmonitoring S3E24
+Episodes [37959] successfully unmonitored.
+Unmonitoring S3E25
+Episodes [37960] successfully unmonitored.
+Unmonitoring S3E26
+2025-02-27 20:27:48,127 - INFO - Received webhook request from Jellyseerr/Overseerr
+2025-02-27 20:27:48,128 - INFO - Event ignored - not an approved TV request
+2025-02-27 21:00:39,231 - ERROR - Exception on /settings [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 872, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/app/webhook_listener.py", line 149, in settings_page
+    return render_template(
+  File "/usr/local/lib/python3.8/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "/usr/local/lib/python3.8/site-packages/jinja2/loaders.py", line 137, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 768, in compile
+    self.handle_exception(source=source_hint)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/app/templates/settings.html", line 213, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateAssertionError: block 'scripts' defined twice
+2025-02-27 21:11:01,184 - ERROR - Exception on /settings [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 872, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/app/webhook_listener.py", line 149, in settings_page
+    return render_template(
+  File "/usr/local/lib/python3.8/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "/usr/local/lib/python3.8/site-packages/jinja2/loaders.py", line 137, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 768, in compile
+    self.handle_exception(source=source_hint)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/app/templates/settings.html", line 213, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateAssertionError: block 'scripts' defined twice
+2025-02-27 22:21:28,421 - ERROR - Exception on /settings [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 872, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/app/webhook_listener.py", line 149, in settings_page
+    return render_template(
+  File "/usr/local/lib/python3.8/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "/usr/local/lib/python3.8/site-packages/jinja2/loaders.py", line 137, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 768, in compile
+    self.handle_exception(source=source_hint)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/app/templates/settings.html", line 213, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateAssertionError: block 'scripts' defined twice
+2025-02-27 22:21:31,929 - ERROR - Exception on /settings [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 872, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/app/webhook_listener.py", line 149, in settings_page
+    return render_template(
+  File "/usr/local/lib/python3.8/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "/usr/local/lib/python3.8/site-packages/jinja2/loaders.py", line 137, in load
+    code = environment.compile(source, name, filename)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 768, in compile
+    self.handle_exception(source=source_hint)
+  File "/usr/local/lib/python3.8/site-packages/jinja2/environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/app/templates/settings.html", line 213, in template
+    {% block scripts %}
+jinja2.exceptions.TemplateAssertionError: block 'scripts' defined twice
+2025-02-27 23:16:53,238 - INFO - Received webhook request from Jellyseerr/Overseerr
+2025-02-27 23:16:53,281 - ERROR - No matching series found for TVDB ID 72108
+2025-02-27 23:16:55,334 - INFO - Series 209 has 'episodes' tag, assigning 'none' rule
+2025-02-27 23:16:55,334 - INFO - Series 209 has 'episodes' tag, assigning 'none' rule
+2025-02-27 23:16:55,336 - INFO - Assigned series 209 to 'none' rule
+2025-02-27 23:16:55,336 - INFO - Assigned series 209 to 'none' rule
+2025-02-27 23:24:59,146 - INFO - Received webhook request from Jellyseerr/Overseerr
+2025-02-27 23:24:59,181 - ERROR - No matching series found for TVDB ID 73255
+2025-02-27 23:25:00,761 - INFO - Series 210 has 'episodes' tag, assigning 'none' rule
+2025-02-27 23:25:00,761 - INFO - Series 210 has 'episodes' tag, assigning 'none' rule
+2025-02-27 23:25:00,763 - INFO - Assigned series 210 to 'none' rule
+2025-02-27 23:25:00,763 - INFO - Assigned series 210 to 'none' rule
+2025-02-28 01:17:56,710 - INFO - Received webhook request from Jellyseerr/Overseerr
+2025-02-28 01:17:56,745 - ERROR - No matching series found for TVDB ID 79168
+2025-02-28 01:17:58,505 - INFO - Series 211 has 'episodes' tag, assigning 'none' rule
+2025-02-28 01:17:58,505 - INFO - Series 211 has 'episodes' tag, assigning 'none' rule
+2025-02-28 01:17:58,509 - INFO - Assigned series 211 to 'none' rule
+2025-02-28 01:17:58,509 - INFO - Assigned series 211 to 'none' rule
+2025-02-28 01:20:47,787 - INFO - Received webhook request from Jellyseerr/Overseerr
+2025-02-28 01:20:47,823 - ERROR - No matching series found for TVDB ID 79168
+2025-02-28 01:23:32,696 - INFO - Received webhook request from Jellyseerr/Overseerr
+2025-02-28 01:23:32,740 - ERROR - No matching series found for TVDB ID 71565
+2025-02-28 01:23:55,166 - INFO - Series 212 has 'episodes' tag, assigning 'none' rule
+2025-02-28 01:23:55,166 - INFO - Series 212 has 'episodes' tag, assigning 'none' rule
+2025-02-28 01:23:55,167 - INFO - Assigned series 212 to 'none' rule
+2025-02-28 01:23:55,167 - INFO - Assigned series 212 to 'none' rule
+2025-02-28 03:53:01,893 - INFO - Received POST request from Tautulli
+2025-02-28 03:53:01,893 - INFO - Received POST request from Tautulli
+2025-02-28 03:53:01,894 - INFO - Webhook received with data: {'plex_title': 'Severance', 'plex_season_num': '2', 'plex_ep_num': '7'}
+2025-02-28 03:53:01,894 - INFO - Webhook received with data: {'plex_title': 'Severance', 'plex_season_num': '2', 'plex_ep_num': '7'}
+2025-02-28 03:53:01,896 - INFO - Data successfully written to data_from_server.json
+2025-02-28 03:53:01,896 - INFO - Data successfully written to data_from_server.json
+2025-02-28 03:53:02,239 - INFO - Searching for series: Severance
+2025-02-28 03:53:02,291 - INFO - Found 52 series in Sonarr
+2025-02-28 03:53:02,291 - INFO - Available series: ['The Last of Us', 'The Lincoln Lawyer', 'Shrinking', 'The Night Agent', 'The Bear', 'The Boys', 'Reacher', 'The Outlaws', 'The Sopranos', 'Stranger Things', 'Mayor of Kingstown', 'The Mandalorian', 'Loki', 'Invasion (2021)', 'Gangs of London', 'The Walking Dead: Dead City', 'Silo', 'Formula 1: Drive to Survive', 'Cobra Kai', 'Peacemaker', 'House of the Dragon', 'The Walking Dead: Daryl Dixon', 'Fargo', 'Slow Horses', 'True Detective', 'Mr Inbetween', 'The Gentlemen', 'Halo', 'Fallout', 'Tulsa King', 'Kin', 'Shōgun', 'Bosch', 'The Ultimate Fighter', 'Presumed Innocent', 'Dark Matter (2024)', 'Trying', 'Those About to Die', 'Bad Monkey', 'FROM', 'The Penguin', 'The Old Man', 'Landman', 'The Agency (2024)', 'Severance', '1923', 'The White Lotus', 'The Day of the Jackal', 'Daredevil: Born Again', 'Vice Principals', 'The Righteous Gemstones', 'Coronation Street']
+2025-02-28 03:53:02,291 - INFO - Found match: Severance
+2025-02-28 03:53:02,292 - INFO - Applying default rule '1n1': {'get_option': '1', 'action_option': 'search', 'keep_watched': '1', 'monitor_watched': False, 'series': ['2', '75', '10', '27', '63', '15', '8', '52', '74', '1', '32', '76', '14', '54', '79', '20', '31', '53', '51', '44', '25', '17', '71', '23', '81', '18', '66', '4', '80', '11', '73', '67', '65', '7', '64', '60', '16', '19', '9', '41', '59', '45', '29', '55', '39', '3', '70', '21']}
+2025-02-28 03:53:02,349 - INFO - Episodes [3815] successfully unmonitored.
+2025-02-28 03:53:02,387 - INFO - Episodes [3816] successfully monitored.
+2025-02-28 03:53:02,405 - INFO - Episode search command sent to Sonarr successfully.
+2025-02-28 03:53:02,406 - INFO - No episodes to delete.
+2025-02-28 03:53:02,889 - INFO - Successfully deleted episode file with ID: 955
+2025-02-28 03:53:02,917 - ERROR - Errors from servertosonarr.py: 2025-02-28 03:53:02,239 - INFO - Searching for series: Severance
+2025-02-28 03:53:02,291 - INFO - Found 52 series in Sonarr
+2025-02-28 03:53:02,291 - INFO - Available series: ['The Last of Us', 'The Lincoln Lawyer', 'Shrinking', 'The Night Agent', 'The Bear', 'The Boys', 'Reacher', 'The Outlaws', 'The Sopranos', 'Stranger Things', 'Mayor of Kingstown', 'The Mandalorian', 'Loki', 'Invasion (2021)', 'Gangs of London', 'The Walking Dead: Dead City', 'Silo', 'Formula 1: Drive to Survive', 'Cobra Kai', 'Peacemaker', 'House of the Dragon', 'The Walking Dead: Daryl Dixon', 'Fargo', 'Slow Horses', 'True Detective', 'Mr Inbetween', 'The Gentlemen', 'Halo', 'Fallout', 'Tulsa King', 'Kin', 'Shōgun', 'Bosch', 'The Ultimate Fighter', 'Presumed Innocent', 'Dark Matter (2024)', 'Trying', 'Those About to Die', 'Bad Monkey', 'FROM', 'The Penguin', 'The Old Man', 'Landman', 'The Agency (2024)', 'Severance', '1923', 'The White Lotus', 'The Day of the Jackal', 'Daredevil: Born Again', 'Vice Principals', 'The Righteous Gemstones', 'Coronation Street']
+2025-02-28 03:53:02,291 - INFO - Found match: Severance
+2025-02-28 03:53:02,292 - INFO - Applying default rule '1n1': {'get_option': '1', 'action_option': 'search', 'keep_watched': '1', 'monitor_watched': False, 'series': ['2', '75', '10', '27', '63', '15', '8', '52', '74', '1', '32', '76', '14', '54', '79', '20', '31', '53', '51', '44', '25', '17', '71', '23', '81', '18', '66', '4', '80', '11', '73', '67', '65', '7', '64', '60', '16', '19', '9', '41', '59', '45', '29', '55', '39', '3', '70', '21']}
+2025-02-28 03:53:02,349 - INFO - Episodes [3815] successfully unmonitored.
+2025-02-28 03:53:02,387 - INFO - Episodes [3816] successfully monitored.
+2025-02-28 03:53:02,405 - INFO - Episode search command sent to Sonarr successfully.
+2025-02-28 03:53:02,406 - INFO - No episodes to delete.
+2025-02-28 03:53:02,889 - INFO - Successfully deleted episode file with ID: 955
+
+2025-02-28 03:53:02,917 - ERROR - Errors from servertosonarr.py: 2025-02-28 03:53:02,239 - INFO - Searching for series: Severance
+2025-02-28 03:53:02,291 - INFO - Found 52 series in Sonarr
+2025-02-28 03:53:02,291 - INFO - Available series: ['The Last of Us', 'The Lincoln Lawyer', 'Shrinking', 'The Night Agent', 'The Bear', 'The Boys', 'Reacher', 'The Outlaws', 'The Sopranos', 'Stranger Things', 'Mayor of Kingstown', 'The Mandalorian', 'Loki', 'Invasion (2021)', 'Gangs of London', 'The Walking Dead: Dead City', 'Silo', 'Formula 1: Drive to Survive', 'Cobra Kai', 'Peacemaker', 'House of the Dragon', 'The Walking Dead: Daryl Dixon', 'Fargo', 'Slow Horses', 'True Detective', 'Mr Inbetween', 'The Gentlemen', 'Halo', 'Fallout', 'Tulsa King', 'Kin', 'Shōgun', 'Bosch', 'The Ultimate Fighter', 'Presumed Innocent', 'Dark Matter (2024)', 'Trying', 'Those About to Die', 'Bad Monkey', 'FROM', 'The Penguin', 'The Old Man', 'Landman', 'The Agency (2024)', 'Severance', '1923', 'The White Lotus', 'The Day of the Jackal', 'Daredevil: Born Again', 'Vice Principals', 'The Righteous Gemstones', 'Coronation Street']
+2025-02-28 03:53:02,291 - INFO - Found match: Severance
+2025-02-28 03:53:02,292 - INFO - Applying default rule '1n1': {'get_option': '1', 'action_option': 'search', 'keep_watched': '1', 'monitor_watched': False, 'series': ['2', '75', '10', '27', '63', '15', '8', '52', '74', '1', '32', '76', '14', '54', '79', '20', '31', '53', '51', '44', '25', '17', '71', '23', '81', '18', '66', '4', '80', '11', '73', '67', '65', '7', '64', '60', '16', '19', '9', '41', '59', '45', '29', '55', '39', '3', '70', '21']}
+2025-02-28 03:53:02,349 - INFO - Episodes [3815] successfully unmonitored.
+2025-02-28 03:53:02,387 - INFO - Episodes [3816] successfully monitored.
+2025-02-28 03:53:02,405 - INFO - Episode search command sent to Sonarr successfully.
+2025-02-28 03:53:02,406 - INFO - No episodes to delete.
+2025-02-28 03:53:02,889 - INFO - Successfully deleted episode file with ID: 955
+
+2025-02-28 04:19:26,097 - INFO - Received webhook request from Jellyseerr/Overseerr
+2025-02-28 04:19:26,097 - INFO - Received webhook request from Jellyseerr/Overseerr
+2025-02-28 04:19:26,097 - INFO - Event ignored - not an approved TV request
+2025-02-28 04:19:26,097 - INFO - Event ignored - not an approved TV request
+2025-02-28 04:47:44,450 - INFO - Received POST request from Tautulli
+2025-02-28 04:47:44,450 - INFO - Received POST request from Tautulli
+2025-02-28 04:47:44,451 - INFO - Webhook received with data: {'plex_title': 'Vice Principals', 'plex_season_num': '2', 'plex_ep_num': '4'}
+2025-02-28 04:47:44,451 - INFO - Webhook received with data: {'plex_title': 'Vice Principals', 'plex_season_num': '2', 'plex_ep_num': '4'}
+2025-02-28 04:47:44,453 - INFO - Data successfully written to data_from_server.json
+2025-02-28 04:47:44,453 - INFO - Data successfully written to data_from_server.json
+2025-02-28 04:47:44,810 - INFO - Searching for series: Vice Principals
+2025-02-28 04:47:44,850 - INFO - Found 51 series in Sonarr
+2025-02-28 04:47:44,850 - INFO - Available series: ['The Last of Us', 'The Lincoln Lawyer', 'Shrinking', 'The Night Agent', 'The Bear', 'The Boys', 'Reacher', 'The Outlaws', 'The Sopranos', 'Stranger Things', 'Mayor of Kingstown', 'The Mandalorian', 'Loki', 'Invasion (2021)', 'Gangs of London', 'The Walking Dead: Dead City', 'Silo', 'Formula 1: Drive to Survive', 'Cobra Kai', 'Peacemaker', 'House of the Dragon', 'The Walking Dead: Daryl Dixon', 'Fargo', 'Slow Horses', 'True Detective', 'Mr Inbetween', 'The Gentlemen', 'Halo', 'Fallout', 'Tulsa King', 'Kin', 'Shōgun', 'Bosch', 'The Ultimate Fighter', 'Presumed Innocent', 'Dark Matter (2024)', 'Trying', 'Those About to Die', 'Bad Monkey', 'FROM', 'The Penguin', 'The Old Man', 'Landman', 'The Agency (2024)', 'Severance', '1923', 'The White Lotus', 'The Day of the Jackal', 'Daredevil: Born Again', 'Vice Principals', 'The Righteous Gemstones']
+2025-02-28 04:47:44,850 - INFO - Found match: Vice Principals
+2025-02-28 04:47:44,851 - INFO - Applying default rule '1n1': {'get_option': '1', 'action_option': 'search', 'keep_watched': '1', 'monitor_watched': False, 'series': ['2', '75', '10', '27', '63', '15', '8', '52', '74', '1', '32', '76', '14', '54', '79', '20', '31', '53', '51', '44', '25', '17', '71', '23', '81', '18', '66', '4', '80', '11', '73', '67', '65', '7', '64', '60', '16', '19', '9', '41', '59', '45', '29', '55', '39', '3', '70', '21']}
+2025-02-28 04:47:44,891 - INFO - Episodes [3926] successfully unmonitored.
+2025-02-28 04:47:44,918 - INFO - Episodes [3927] successfully monitored.
+2025-02-28 04:47:44,930 - INFO - Episode search command sent to Sonarr successfully.
+2025-02-28 04:47:44,931 - INFO - No episodes to delete.
+2025-02-28 04:47:45,195 - INFO - Successfully deleted episode file with ID: 945
+2025-02-28 04:47:45,211 - ERROR - Errors from servertosonarr.py: 2025-02-28 04:47:44,810 - INFO - Searching for series: Vice Principals
+2025-02-28 04:47:44,850 - INFO - Found 51 series in Sonarr
+2025-02-28 04:47:44,850 - INFO - Available series: ['The Last of Us', 'The Lincoln Lawyer', 'Shrinking', 'The Night Agent', 'The Bear', 'The Boys', 'Reacher', 'The Outlaws', 'The Sopranos', 'Stranger Things', 'Mayor of Kingstown', 'The Mandalorian', 'Loki', 'Invasion (2021)', 'Gangs of London', 'The Walking Dead: Dead City', 'Silo', 'Formula 1: Drive to Survive', 'Cobra Kai', 'Peacemaker', 'House of the Dragon', 'The Walking Dead: Daryl Dixon', 'Fargo', 'Slow Horses', 'True Detective', 'Mr Inbetween', 'The Gentlemen', 'Halo', 'Fallout', 'Tulsa King', 'Kin', 'Shōgun', 'Bosch', 'The Ultimate Fighter', 'Presumed Innocent', 'Dark Matter (2024)', 'Trying', 'Those About to Die', 'Bad Monkey', 'FROM', 'The Penguin', 'The Old Man', 'Landman', 'The Agency (2024)', 'Severance', '1923', 'The White Lotus', 'The Day of the Jackal', 'Daredevil: Born Again', 'Vice Principals', 'The Righteous Gemstones']
+2025-02-28 04:47:44,850 - INFO - Found match: Vice Principals
+2025-02-28 04:47:44,851 - INFO - Applying default rule '1n1': {'get_option': '1', 'action_option': 'search', 'keep_watched': '1', 'monitor_watched': False, 'series': ['2', '75', '10', '27', '63', '15', '8', '52', '74', '1', '32', '76', '14', '54', '79', '20', '31', '53', '51', '44', '25', '17', '71', '23', '81', '18', '66', '4', '80', '11', '73', '67', '65', '7', '64', '60', '16', '19', '9', '41', '59', '45', '29', '55', '39', '3', '70', '21']}
+2025-02-28 04:47:44,891 - INFO - Episodes [3926] successfully unmonitored.
+2025-02-28 04:47:44,918 - INFO - Episodes [3927] successfully monitored.
+2025-02-28 04:47:44,930 - INFO - Episode search command sent to Sonarr successfully.
+2025-02-28 04:47:44,931 - INFO - No episodes to delete.
+2025-02-28 04:47:45,195 - INFO - Successfully deleted episode file with ID: 945
+
+2025-02-28 04:47:45,211 - ERROR - Errors from servertosonarr.py: 2025-02-28 04:47:44,810 - INFO - Searching for series: Vice Principals
+2025-02-28 04:47:44,850 - INFO - Found 51 series in Sonarr
+2025-02-28 04:47:44,850 - INFO - Available series: ['The Last of Us', 'The Lincoln Lawyer', 'Shrinking', 'The Night Agent', 'The Bear', 'The Boys', 'Reacher', 'The Outlaws', 'The Sopranos', 'Stranger Things', 'Mayor of Kingstown', 'The Mandalorian', 'Loki', 'Invasion (2021)', 'Gangs of London', 'The Walking Dead: Dead City', 'Silo', 'Formula 1: Drive to Survive', 'Cobra Kai', 'Peacemaker', 'House of the Dragon', 'The Walking Dead: Daryl Dixon', 'Fargo', 'Slow Horses', 'True Detective', 'Mr Inbetween', 'The Gentlemen', 'Halo', 'Fallout', 'Tulsa King', 'Kin', 'Shōgun', 'Bosch', 'The Ultimate Fighter', 'Presumed Innocent', 'Dark Matter (2024)', 'Trying', 'Those About to Die', 'Bad Monkey', 'FROM', 'The Penguin', 'The Old Man', 'Landman', 'The Agency (2024)', 'Severance', '1923', 'The White Lotus', 'The Day of the Jackal', 'Daredevil: Born Again', 'Vice Principals', 'The Righteous Gemstones']
+2025-02-28 04:47:44,850 - INFO - Found match: Vice Principals
+2025-02-28 04:47:44,851 - INFO - Applying default rule '1n1': {'get_option': '1', 'action_option': 'search', 'keep_watched': '1', 'monitor_watched': False, 'series': ['2', '75', '10', '27', '63', '15', '8', '52', '74', '1', '32', '76', '14', '54', '79', '20', '31', '53', '51', '44', '25', '17', '71', '23', '81', '18', '66', '4', '80', '11', '73', '67', '65', '7', '64', '60', '16', '19', '9', '41', '59', '45', '29', '55', '39', '3', '70', '21']}
+2025-02-28 04:47:44,891 - INFO - Episodes [3926] successfully unmonitored.
+2025-02-28 04:47:44,918 - INFO - Episodes [3927] successfully monitored.
+2025-02-28 04:47:44,930 - INFO - Episode search command sent to Sonarr successfully.
+2025-02-28 04:47:44,931 - INFO - No episodes to delete.
+2025-02-28 04:47:45,195 - INFO - Successfully deleted episode file with ID: 945
+

@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}Assign Rules - Series Manager{% endblock %}
+
+{% block content %}
+<h3>Assign/Unassign Rules to Series</h3>
+<form id="assign-rules-form" method="POST" action="{{ url_for('assign_rules') }}">
+    <div class="form-group">
+        <label for="assign_rule_name">Select Rule:</label>
+        <select id="assign_rule_name" name="assign_rule_name" class="form-control" onchange="updateCheckboxes()">
+            <option value="None">None</option>
+            {% for rule_name in config['rules'].keys() %}
+            <option value="{{ rule_name }}" {{ 'selected' if rule_name == rule else '' }}>{{ rule_name|capitalize }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="series_list">Select Series:</label>
+        <div id="series_list" class="checkbox-list">
+            {% for series in all_series %}
+            <div class="checkbox-item">
+                <input type="checkbox" class="series-checkbox" id="series_{{ series['id'] }}" name="series_ids" value="{{ series['id'] }}" data-rule="{{ series['assigned_rule'] }}">
+                <label for="series_{{ series['id'] }}">{{ series['title'] }} ({{ series['assigned_rule'] or 'None' }})</label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Assign checked shows to above rule</button>
+    <span class="disclaimer">(will override current assignments)</span>
+</form>
+
+{% if message %}
+<div class="alert alert-success">{{ message }}</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<!-- Original scripts content -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize rule settings
+        loadRule();
+        
+        // Show the first section by default
+        showSettingsSection('service_status');
+        
+        // Parse URL parameters for message
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        
+        if (message) {
+            // Clean the URL
+            window.history.replaceState({}, document.title, '/settings');
+            
+            // Show message
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'alert alert-success';
+            messageDiv.textContent = message;
+            document.querySelector('.settings-container').prepend(messageDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+    });
+    
+    function showSettingsSection(subsectionId) {
+        document.querySelectorAll('.settings-subsection').forEach(subsection => {
+            subsection.style.display = 'none';
+        });
+        document.getElementById(subsectionId).style.display = 'block';
+    }
+    
+    function toggleNewRuleName() {
+        var newRuleNameGroup = document.getElementById('new_rule_name_group');
+        if (document.getElementById('rule_name').value === 'add_new') {
+            newRuleNameGroup.style.display = 'block';
+        } else {
+            newRuleNameGroup.style.display = 'none';
+        }
+        loadRule();
+    }
+    
+    function loadRule() {
+        var ruleName = document.getElementById('rule_name').value;
+        var config = JSON.parse(document.getElementById('config-data').textContent);
+        var rule = config.rules[ruleName];
+
+        document.getElementById('get_option').value = rule ? rule.get_option : '';
+        document.getElementById('action_option').value = rule ? rule.action_option : '';
+        document.getElementById('keep_watched').value = rule ? rule.keep_watched : '';
+        document.getElementById('monitor_watched').value = rule ? rule.monitor_watched.toString() : 'false';
+    }
+    
+    function confirmDeleteRule() {
+        var ruleName = document.getElementById('rule_name').value;
+        if (ruleName === 'default') {
+            alert("The default rule cannot be deleted.");
+            return false;
+        }
+        document.getElementById('delete_rule_name').value = ruleName;
+        return confirm(`Are you sure you want to delete the rule "${ruleName}"?`);
+    }
+
+    // Episode selection functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Only run if these elements exist
+        if (!document.getElementById('direct-request')) return;
+        
+        const directRequestInput = document.getElementById('direct-request');
+        const processDirectRequestBtn = document.getElementById('process-direct-request');
+        const seriesSelect = document.getElementById('series-select');
+        const seasonSelect = document.getElementById('season-select');
+        const goToSelectionBtn = document.getElementById('go-to-selection');
+        
+        // Process direct request
+        processDirectRequestBtn.addEventListener('click', function() {
+            const request = directRequestInput.value.trim();
+            if (!request) {
+                alert('Please enter a show name');
+                return;
+            }
+            
+            // Parse the request to identify show name, season, episodes
+            const patterns = [
+                // Show Name S01E01-03
+                /^(.*?)\s+[sS](\d+)[eE](\d+)(?:-(\d+))?$/,
+                // Show Name S01
+                /^(.*?)\s+[sS](\d+)$/,
+                // Just show name
+                /^(.*?)$/
+            ];
+            
+            let match;
+            let pattern;
+            for (let i = 0; i < patterns.length; i++) {
+                match = request.match(patterns[i]);
+                if (match) {
+                    pattern = i;
+                    break;
+                }
+            }
+            
+            if (!match) {
+                alert('Invalid format. Please use "Show Name S01E01-03", "Show Name S01", or just "Show Name"');
+                return;
+            }
+            
+            const showName = match[1].trim();
+            
+            // Search for the show
+            fetch(`/search-series?query=${encodeURIComponent(showName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'error') {
+                        alert(data.message);
+                        return;
+                    }
+                    
+                    if (data.series.length === 0) {
+                        alert('No matching series found');
+                        return;
+                    }
+                    
+                    // If exactly one match, proceed
+                    if (data.series.length === 1) {
+                        const series = data.series[0];
+                        
+                        if (pattern === 0) {
+                            // Show Name S01E01-03
+                            const season = match[2];
+                            const startEp = match[3];
+                            const endEp = match[4] || startEp;
+                            
+                            // Go to episode selection with pre-selected episodes
+                            window.location.href = `/episode-selection?series_id=${series.id}&season=${season}&start_ep=${startEp}&end_ep=${endEp}`;
+                        } else if (pattern === 1) {
+                            // Show Name S01
+                            const season = match[2];
+                            window.location.href = `/episode-selection?series_id=${series.id}&season=${season}`;
+                        } else {
+                            // Just show name - show all seasons
+                            window.location.href = `/episode-selection?series_id=${series.id}`;
+                        }
+                    } else {
+                        // Multiple matches - show a modal or dropdown to select
+                        // For simplicity, we'll just take the first match for now
+                        alert(`Multiple matches found. Using "${data.series[0].title}"`);
+                        const series = data.series[0];
+                        
+                        if (pattern === 0) {
+                            const season = match[2];
+                            const startEp = match[3];
+                            const endEp = match[4] || startEp;
+                            window.location.href = `/episode-selection?series_id=${series.id}&season=${season}&start_ep=${startEp}&end_ep=${endEp}`;
+                        } else if (pattern === 1) {
+                            const season = match[2];
+                            window.location.href = `/episode-selection?series_id=${series.id}&season=${season}`;
+                        } else {
+                            window.location.href = `/episode-selection?series_id=${series.id}`;
+                        }
+                    }
+                })
+                .catch(error => {
+                    alert(`Error: ${error.message}`);
+                });
+        });
+        
+        // Handle series selection
+        if (seriesSelect) {
+            seriesSelect.addEventListener('change', function() {
+                const seriesId = this.value;
+                seasonSelect.innerHTML = '<option value="">Select a season</option>';
+                seasonSelect.disabled = true;
+                goToSelectionBtn.disabled = true;
+                
+                if (!seriesId) return;
+                
+                fetch(`/get-seasons?series_id=${seriesId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const seasons = data.seasons
+                                .filter(season => season.seasonNumber > 0)
+                                .sort((a, b) => b.seasonNumber - a.seasonNumber);
+                            
+                            seasons.forEach(season => {
+                                const option = document.createElement('option');
+                                option.value = season.seasonNumber;
+                                option.textContent = `Season ${season.seasonNumber}`;
+                                seasonSelect.appendChild(option);
+                            });
+                            
+                            seasonSelect.disabled = false;
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert(`Error: ${error.message}`);
+                    });
+            });
+        }
+        
+        if (seasonSelect) {
+            seasonSelect.addEventListener('change', function() {
+                goToSelectionBtn.disabled = !this.value;
+            });
+        }
+        
+        if (goToSelectionBtn) {
+            goToSelectionBtn.addEventListener('click', function() {
+                const seriesId = seriesSelect.value;
+                const seasonNumber = seasonSelect.value;
+                
+                if (seriesId && seasonNumber) {
+                    window.location.href = `/episode-selection?series_id=${seriesId}&season=${seasonNumber}`;
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

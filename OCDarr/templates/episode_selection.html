@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Episode Selection</title>
+    <style>
+        .episode-container {
+            max-height: 70vh;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .episode-item {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+        }
+        
+        .episode-item:hover {
+            background-color: rgba(50, 50, 50, 0.5);
+        }
+        
+        .episode-checkbox {
+            margin-right: 10px;
+        }
+        
+        .selection-controls {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .selection-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        #message-area {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: rgba(40, 167, 69, 0.7);
+        }
+        
+        .error-message {
+            background-color: rgba(220, 53, 69, 0.7);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .menu-icon {
+            cursor: pointer;
+        }
+
+        .episode-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="menu my-3">
+            <span onclick="location.href='/';" class="menu-icon">Home</span>
+            <span class="menu-icon active">Episode Selection</span>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="series-select">Series:</label>
+                    <select id="series-select" class="form-control">
+                        <option value="">Select a series</option>
+                        {% for series in all_series %}
+                        <option value="{{ series.id }}">{{ series.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="season-select">Season:</label>
+                    <select id="season-select" class="form-control" disabled>
+                        <option value="">Select a season</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div id="episode-selection-area" class="hidden">
+            <h4 id="series-title">Series Title</h4>
+            <h5 id="season-title">Season</h5>
+            
+            <div class="selection-controls">
+                <button id="select-all" class="btn btn-secondary">Select All</button>
+                <button id="select-none" class="btn btn-secondary">Clear All</button>
+            </div>
+            
+            <div class="episode-container">
+                <div id="episode-list" class="episode-list">
+                    <!-- Episodes will be loaded here -->
+                    <div class="text-center w-100">
+                        <p>Select a series and season to view episodes</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="selection-actions">
+                <button id="process-episodes" class="btn btn-primary">
+                    <span id="loading-spinner" class="loading hidden"></span>
+                    Monitor & Search Selected Episodes
+                </button>
+                <a href="/" class="btn btn-danger">Cancel</a>
+            </div>
+        </div>
+        
+        <div id="message-area"></div>
+    </div>
+    
+    <script>
+        // Element references
+        const seriesSelect = document.getElementById('series-select');
+        const seasonSelect = document.getElementById('season-select');
+        const episodeSelectionArea = document.getElementById('episode-selection-area');
+        const seriesTitle = document.getElementById('series-title');
+        const seasonTitle = document.getElementById('season-title');
+        const episodeList = document.getElementById('episode-list');
+        const selectAllBtn = document.getElementById('select-all');
+        const selectNoneBtn = document.getElementById('select-none');
+        const processEpisodesBtn = document.getElementById('process-episodes');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const messageArea = document.getElementById('message-area');
+        
+        // Event listeners
+        seriesSelect.addEventListener('change', handleSeriesChange);
+        seasonSelect.addEventListener('change', handleSeasonChange);
+        selectAllBtn.addEventListener('click', selectAllEpisodes);
+        selectNoneBtn.addEventListener('click', selectNoEpisodes);
+        processEpisodesBtn.addEventListener('click', processSelectedEpisodes);
+        
+        // Functions
+        function handleSeriesChange() {
+            const seriesId = seriesSelect.value;
+            
+            // Reset UI elements
+            seasonSelect.innerHTML = '<option value="">Select a season</option>';
+            seasonSelect.disabled = true;
+            episodeSelectionArea.classList.add('hidden');
+            episodeList.innerHTML = '';
+            
+            if (!seriesId) return;
+            
+            // Update series title
+            seriesTitle.textContent = seriesSelect.options[seriesSelect.selectedIndex].text;
+            
+            // Fetch seasons
+            fetch(`/get-seasons?series_id=${seriesId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Add seasons to select dropdown
+                        const seasons = data.seasons
+                            .filter(season => season.seasonNumber > 0) // Filter out specials (season 0)
+                            .sort((a, b) => b.seasonNumber - a.seasonNumber); // Sort descending
+                        
+                        seasons.forEach(season => {
+                            const option = document.createElement('option');
+                            option.value = season.seasonNumber;
+                            option.textContent = `Season ${season.seasonNumber}`;
+                            seasonSelect.appendChild(option);
+                        });
+                        
+                        seasonSelect.disabled = false;
+                    } else {
+                        showMessage(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage(`Error fetching seasons: ${error}`, 'error');
+                });
+        }
+        
+        function handleSeasonChange() {
+            const seriesId = seriesSelect.value;
+            const seasonNumber = seasonSelect.value;
+            
+            // Reset UI elements
+            episodeList.innerHTML = '';
+            
+            if (!seriesId || !seasonNumber) {
+                episodeSelectionArea.classList.add('hidden');
+                return;
+            }
+            
+            // Update season title
+            seasonTitle.textContent = `Season ${seasonNumber}`;
+            
+            // Show the selection area
+            episodeSelectionArea.classList.remove('hidden');
+            
+            // Fetch episodes
+            fetch(`/get-episodes?series_id=${seriesId}&season=${seasonNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Add episodes to the list
+                        data.episodes.forEach(episode => {
+                            const episodeItem = document.createElement('div');
+                            episodeItem.className = 'episode-item';
+                            
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.className = 'episode-checkbox';
+                            checkbox.setAttribute('data-episode-id', episode.id);
+                            checkbox.setAttribute('data-episode-number', episode.episodeNumber);
+                            
+                            const label = document.createElement('label');
+                            label.textContent = `${episode.episodeNumber}. ${episode.title}`;
+                            label.style.cursor = 'pointer';
+                            
+                            // Make the entire row clickable
+                            episodeItem.addEventListener('click', (e) => {
+                                if (e.target !== checkbox) {
+                                    checkbox.checked = !checkbox.checked;
+                                }
+                            });
+                            
+                            episodeItem.appendChild(checkbox);
+                            episodeItem.appendChild(label);
+                            episodeList.appendChild(episodeItem);
+                        });
+                    } else {
+                        showMessage(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage(`Error fetching episodes: ${error}`, 'error');
+                });
+        }
+        
+        function selectAllEpisodes() {
+            document.querySelectorAll('.episode-checkbox').forEach(checkbox => {
+                checkbox.checked = true;
+            });
+        }
+        
+        function selectNoEpisodes() {
+            document.querySelectorAll('.episode-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+        
+        function processSelectedEpisodes() {
+            const seriesId = seriesSelect.value;
+            const seasonNumber = seasonSelect.value;
+            
+            if (!seriesId || !seasonNumber) {
+                showMessage('Please select a series and season', 'error');
+                return;
+            }
+            
+            // Get selected episodes
+            const selectedEpisodes = [];
+            document.querySelectorAll('.episode-checkbox:checked').forEach(checkbox => {
+                selectedEpisodes.push(checkbox.getAttribute('data-episode-number'));
+            });
+            
+            if (selectedEpisodes.length === 0) {
+                showMessage('Please select at least one episode', 'error');
+                return;
+            }
+            
+            // Show loading spinner
+            loadingSpinner.classList.remove('hidden');
+            processEpisodesBtn.disabled = true;
+            
+            // Process episodes
+            fetch('/process-episodes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    series_id: seriesId,
+                    season: seasonNumber,
+                    episodes: selectedEpisodes
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading spinner
+                loadingSpinner.classList.add('hidden');
+                processEpisodesBtn.disabled = false;
+                
+                if (data.status === 'success') {
+                    showMessage(`Success! ${data.episodes.length} episodes are being monitored and searched for.`, 'success');
+                    
+                    // Disable process button to prevent multiple submissions
+                    processEpisodesBtn.disabled = true;
+                } else {
+                    showMessage(`Error: ${data.message}`, 'error');
+                }
+            })
+            .catch(error => {
+                // Hide loading spinner
+                loadingSpinner.classList.add('hidden');
+                processEpisodesBtn.disabled = false;
+                
+                showMessage(`Error: ${error.message}`, 'error');
+            });
+        }
+        
+        function showMessage(message, type) {
+            messageArea.textContent = message;
+            messageArea.className = type === 'success' ? 'success-message' : 'error-message';
+            messageArea.style.display = 'block';
+            
+            // Scroll to the message
+            messageArea.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

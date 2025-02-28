@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Series Manager{% endblock %}
+
+{% block content %}
+<!-- Watching Section -->
+<div id="current" class="series-container" {% if section != 'current' %}style="display: none;"{% endif %}>
+    <div class="row">
+        {% for series in current_series %}
+        <div class="col-12 series-item mb-3">
+            <div class="banner-wrapper">
+                <a href="{{ series.sonarr_series_url }}">
+                    <img src="{{ series.artwork_url }}" alt="Artwork for {{ series.name }}" class="img-fluid banner">
+                </a>
+            </div>
+            <div class="series-info text-center mt-1">
+                <p class="episode-info">{{ series.latest_monitored_episode }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Premiering Section -->
+<div id="upcoming" class="series-container" {% if section != 'upcoming' %}style="display: none;"{% endif %}>
+    <div class="row">
+        {% for premiere in upcoming_premieres %}
+        <div class="col-12 series-item mb-3">
+            <div class="banner-wrapper">
+                <a href="{{ premiere.sonarr_series_url }}">
+                    <img src="{{ premiere.artwork_url }}" alt="Artwork for {{ premiere.name }}" class="img-fluid banner">
+                </a>
+            </div>
+            <div class="series-info text-center mt-1">
+                <p class="series-title">{{ premiere.name }}</p>
+                <p class="episode-info">{{ premiere.nextAiring.split(' at ')[0] }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show the appropriate section based on URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const section = urlParams.get('section') || 'current';
+        showSection(section);
+    });
+    
+    function showSection(sectionId) {
+        document.querySelectorAll('.series-container').forEach(div => {
+            div.style.display = 'none';
+        });
+        
+        document.getElementById(sectionId).style.display = 'block';
+    }
+</script>
+{% endblock %}
